@@ -15,6 +15,7 @@ type UserController struct {
 
 func (c *UserController) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(http.MethodPost, "/add", "AddUser")
+	b.Handle(http.MethodPost, "/login/{username:string}/{password}", "Login")
 	b.Handle(http.MethodGet, "/smoke", "Smoke")
 }
 
@@ -26,42 +27,39 @@ func (c *UserController) AddUser() mvc.Result {
 	if err := c.ReadJSON(user); err != nil {
 		return c.Failed(err.Error())
 	}
-	// if err := c.Ctx.ReadJSON(user); err != nil {
-	// 	log.Errorf("add user error:%v", err.Error())
-	// 	return mvc.Response{
-	// 		Code: http.StatusOK,
-	// 		Object: map[string]interface{}{
-	// 			"code":    0,
-	// 			"message": fmt.Sprintf("添加用户失败, msg:%v", err.Error()),
-	// 		},
-	// 	}
-	// }
 	err := service.UserService.AddUser(user)
 	if err != nil {
 		return c.Failed(err.Error())
-		// return mvc.Response{
-		// 	Code: http.StatusOK,
-		// 	Object: map[string]interface{}{
-		// 		"code":    0,
-		// 		"message": fmt.Sprintf("添加用户失败, msg:%v", err.Error()),
-		// 	},
-		// }
 	}
-	return c.Ok("add user success")
-	// return mvc.Response{
-	// 	Code: http.StatusOK,
-	// 	Object: map[string]interface{}{
-	// 		"code":    1,
-	// 		"message": "添加用户成功",
-	// 	},
-	// }
+	return c.Ok("")
+}
+
+func (c *UserController) Login() mvc.Result {
+	log.Infof("params=%v\n", c.Ctx.Params())
+	name := c.Param("username")
+	pwd := c.Param("password")
+	log.Infof("username=%v pwd=%v\n", name, pwd)
+	u, err := service.UserService.GetUserByName(name)
+	if err != nil {
+		log.Errorf("%v", err)
+		return c.Failed(err.Error())
+	}
+	if u == nil {
+		return c.Failed("用户不存在")
+	}
+
+	if u.Password != pwd {
+		return c.Failed("密码错误")
+	}
+	return c.Ok(u)
 }
 
 func (c *UserController) UpdateUser() mvc.Result {
 	user := new(model.User)
-	if err := c.Ctx.ReadJSON(user); err != nil {
+	if err := c.ReadJSON(user); err != nil {
 		return c.Failed(err.Error())
 	}
+	service.UserService.UpdateUser(user)
 	return c.Ok("")
 }
 

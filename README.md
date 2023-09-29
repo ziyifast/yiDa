@@ -1,5 +1,20 @@
 # 易搭
 
+## 0 环境搭建
+> 系统：MacOS
+IDE：VSCode
+```bash
+brew install npm
+npm install vue-cli -g
+vue init webpack yiDa
+npm install element-ui --save
+# 解决 ERR! ENOENT: no such file or directory, open,如果运行npm run dev报错，查看自己路径是否正确，npm run dev 默认会在当前寻找package.json
+npm install axios
+
+
+```
+
+
 ## 1 介绍
 > V1版本
 
