@@ -24,8 +24,10 @@ npm install axios
 
 
 ## 2 技术选型
+xorm+iris
 
 ## 3 项目结构
+> 前后端分离项目
 
 ## 4 数据库设计
 ```sql

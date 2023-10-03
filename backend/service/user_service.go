@@ -31,6 +31,14 @@ func (s *userService) UpdateUser(user *model.User) error {
 			log.Errorf("%v", err)
 		}
 	}()
+	u, err := dao.UserDao.GetUserById(pg.Engine, int64(user.Id))
+	if err != nil {
+		log.Errorf("%v", err)
+		return err
+	}
+	if u == nil {
+		return fmt.Errorf("the user is not exist")
+	}
 	//TODO 校验操作
 	if _, err := dao.UserDao.UpdateUserById(pg.Engine, user); err != nil {
 		log.Errorf("%v", err)

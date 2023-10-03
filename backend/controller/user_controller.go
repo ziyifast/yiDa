@@ -16,6 +16,7 @@ type UserController struct {
 func (c *UserController) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(http.MethodPost, "/add", "AddUser")
 	b.Handle(http.MethodPost, "/login/{username:string}/{password}", "Login")
+	b.Handle(http.MethodPost, "/update", "UpdateUser")
 	b.Handle(http.MethodGet, "/smoke", "Smoke")
 }
 
@@ -59,7 +60,10 @@ func (c *UserController) UpdateUser() mvc.Result {
 	if err := c.ReadJSON(user); err != nil {
 		return c.Failed(err.Error())
 	}
-	service.UserService.UpdateUser(user)
+	err := service.UserService.UpdateUser(user)
+	if err != nil {
+		return c.Failed(err.Error())
+	}
 	return c.Ok("")
 }
 
