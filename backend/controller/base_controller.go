@@ -21,6 +21,10 @@ type BaseController struct {
 func (c *BaseController) Param(paramName string) string {
 	return c.Ctx.Params().Get(paramName)
 }
+func (c *BaseController) PostValue(paramName string) string {
+	return c.Ctx.PostValue(paramName)
+}
+
 func (c *BaseController) ParamInt64Default(paramName string, defaultValue int64) int64 {
 	return c.Ctx.Params().GetInt64Default(paramName, defaultValue)
 }

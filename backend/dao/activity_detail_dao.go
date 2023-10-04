@@ -14,6 +14,10 @@ func (d *activityDetailDao) Insert(engine xorm.Interface, activityDetail *model.
 }
 
 func (d *activityDetailDao) Get(engine xorm.Interface) (detailList []*model.ActivityDetail, err error) {
-	err = engine.Find(&detailList)
+	err = engine.OrderBy("id").Find(&detailList)
 	return
+}
+
+func (d *activityDetailDao) UpdateActivityDetailById(engine xorm.Interface, activityDetail *model.ActivityDetail) (int64, error) {
+	return engine.Where("id=?", activityDetail.Id).Update(activityDetail)
 }

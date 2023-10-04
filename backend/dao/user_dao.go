@@ -14,7 +14,7 @@ type userDao struct {
 var UserDao = new(userDao)
 
 func (d *userDao) Insert(engine *xorm.Engine, user *model.User) (int64, error) {
-	i, err := engine.Insert(user)
+	i, err := engine.Omit("id").Insert(user)
 	if err != nil {
 		log.Errorf("%v", err)
 		return -1, err

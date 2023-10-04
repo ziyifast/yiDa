@@ -16,6 +16,7 @@ type ActivityDetailController struct {
 func (c *ActivityDetailController) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(http.MethodGet, "/list", "GetAllActivityDetail")
 	b.Handle(http.MethodPost, "/add", "AddActivityDetail")
+	b.Handle(http.MethodPost, "/update", "UpdateActivityDetail")
 }
 
 func (c *ActivityDetailController) AddActivityDetail() mvc.Result {
@@ -41,4 +42,19 @@ func (c *ActivityDetailController) GetAllActivityDetail() mvc.Result {
 		return c.Failed(err.Error())
 	}
 	return c.Ok(list)
+}
+
+func (c *ActivityDetailController) UpdateActivityDetail() mvc.Result {
+	activityDetail := &model.ActivityDetail{}
+	if err := c.ReadJSON(activityDetail); err != nil {
+		log.Errorf("%v", err)
+		return c.Failed(err.Error())
+	}
+	log.Infof("%v", activityDetail)
+	err := service.ActivityDetailService.UpdateActivityDetailById(activityDetail)
+	if err != nil {
+		log.Errorf("%v", err)
+		return c.Failed(err.Error())
+	}
+	return c.Ok("update success...")
 }

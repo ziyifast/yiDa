@@ -10,9 +10,9 @@ type ActivityDetail struct {
 	Owner       int             `json:"owner"`
 	Description string          `json:"description"`
 	UserList    string          `json:"user_list"`
-	Status      int             `json:"stats"`
+	Status      int             `json:"status"`
 	CreateTime  types.LocalTime `json:"create_time"`
-	UpdateTime  types.LocalTime `json:"update_time"`
+	UpdateTime  types.LocalTime `json:"update_time" xorm:"updated"`
 }
 
 func (a *ActivityDetail) TableName() string {

@@ -27,3 +27,12 @@ func (s *activityDetailService) GetAll() ([]*model.ActivityDetail, error) {
 	}
 	return detailList, nil
 }
+
+func (s *activityDetailService) UpdateActivityDetailById(detail *model.ActivityDetail) error {
+	// 更新活动详情表
+	_, err := dao.ActivityDetailDao.UpdateActivityDetailById(pg.Engine, detail)
+	if err != nil {
+		return err
+	}
+	return nil
+}

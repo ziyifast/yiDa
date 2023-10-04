@@ -3,7 +3,7 @@ import axios from 'axios'
 import router from '../router'
 axios.defaults.timeout = 5000 // 超时时间：5s
 axios.defaults.withCredentials = true// 允许跨域
-// Content-Type 响应头
+// Content-Type 请求头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 // 访问基础url
 axios.defaults.baseURL = 'http://localhost:8083'
@@ -40,11 +40,11 @@ axios.interceptors.response.use(
 )
 
 /**
- * 封装get请求
+ * 封装get请求：异步处理
  */
-export function get (url, params = {}) {
+export function get(url, params = {}) {
   return new Promise((resolve, reject) => {
-    axios.get(url, {params: params})
+    axios.get(url, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -54,15 +54,40 @@ export function get (url, params = {}) {
   })
 }
 
+export function getSync(url, params = {}) {
+  return axios.get(url, { params: params })
+    .then(response => response.data)
+    .catch(err => err)
+    .finally(() => { })
+}
+
 /**
  * 封装post请求
  */
-export function post (url, data = {}) {
+export function post(url, data = {}) {
   return new Promise((resolve, reject) => {
     axios.post(url, data)
       .then(response => {
         resolve(response.data)
       })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
+
+/*
+封装json请求
+*/
+export function postJson(url, data = {}) {
+  return new Promise((resolve, reject) => {
+    axios.post(url, data, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }).then(response => {
+      resolve(response.data)
+    })
       .catch(err => {
         reject(err)
       })
