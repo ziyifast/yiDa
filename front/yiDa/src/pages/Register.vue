@@ -25,12 +25,20 @@
                     <el-form-item label="城市" prop="city">
                         <el-input v-model="ruleForm.city"></el-input>
                     </el-form-item>
-                    <el-form-item label="兴趣点" prop="hobbies">
+                    <el-form-item label="活动性质">
+                        <el-checkbox-group v-model="ruleForm.hobbies">
+                            <el-checkbox label="篮球" name="type"></el-checkbox>
+                            <el-checkbox label="足球" name="type"></el-checkbox>
+                            <el-checkbox label="散步" name="type"></el-checkbox>
+                            <el-checkbox label="游泳" name="type"></el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                    <!-- <el-form-item label="兴趣点" prop="hobbies">
                         <el-select v-model="ruleForm.hobbies" placeholder="请选择你的爱好">
                             <el-option label="篮球" value="basketball"></el-option>
                             <el-option label="城市漫步" value="city walk"></el-option>
                         </el-select>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="生日" required>
                         <el-col :span="11">
                             <el-form-item prop="birthday">
@@ -76,7 +84,7 @@ export default {
                 phone: '',
                 city: '',
                 description: '',
-                hobbies: '["篮球"]',
+                hobbies: [],
                 birthday: '2001-03-21',
                 // type: [],
                 desc: ''
@@ -109,7 +117,7 @@ export default {
                     //TODO 向后端发起请求
                     let data = this.ruleForm
                     console.log(data);
-                    console.log(this.ruleForm);
+                    this.ruleForm.hobbies = this.ruleForm.hobbies.join(",")
                     addUser(data).then(res => {
                         console.log(res);
                         if (res.code == '1') {

@@ -10,4 +10,5 @@ func InitControllers(app *iris.Application) {
 	myMvc.Handle(new(UserController))
 	myActivityDetailMvc := mvc.New(app.Party("/activity_detail"))
 	myActivityDetailMvc.Handle(new(ActivityDetailController))
+	mvc.New(app.Party("/user_activity")).Handle(new(UserActivityController))
 }

@@ -36,3 +36,12 @@ func (s *activityDetailService) UpdateActivityDetailById(detail *model.ActivityD
 	}
 	return nil
 }
+
+
+func (s *activityDetailService) GetActivitiesByIds(ids []int64) (activities []*model.ActivityDetail, err error){
+	activities, err = dao.ActivityDetailDao.GetActivitiesByIds(pg.Engine, ids)
+	if err != nil {
+		return nil, err
+	}
+	return activities, nil
+}

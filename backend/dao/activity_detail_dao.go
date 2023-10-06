@@ -21,3 +21,8 @@ func (d *activityDetailDao) Get(engine xorm.Interface) (detailList []*model.Acti
 func (d *activityDetailDao) UpdateActivityDetailById(engine xorm.Interface, activityDetail *model.ActivityDetail) (int64, error) {
 	return engine.Where("id=?", activityDetail.Id).Update(activityDetail)
 }
+
+func (d *activityDetailDao) GetActivitiesByIds(engine xorm.Interface, ids []int64) (detailList []*model.ActivityDetail, err error) {
+	err = engine.In("id", ids).Find(&detailList)
+	return
+}

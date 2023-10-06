@@ -18,3 +18,9 @@ export const getData = () => get('/data');
 export const getActivityList = () => get('/activity_detail/list');
 
 export const updateActitityDetail = (params) => postJson(`/activity_detail/update`, params);
+
+export const getActivityListByUid = (uid) => get(`/activity_detail/get/${uid}`);
+
+
+//=======user_activity相关========
+export const deleteUserActivityByUidAndAid = (uid, aid) => post(`/user_activity/delete/${uid}/${aid}`)
