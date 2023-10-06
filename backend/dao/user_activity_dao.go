@@ -29,3 +29,12 @@ func (d *userActivityDao) DeleteByUidAndAid(engine xorm.Interface, uid, aid int6
 	}
 	return nil
 }
+
+func (d *userActivityDao) InsertUserActivity(engine xorm.Interface, userActivity *model.UserActivity) error {
+	_, err := engine.Insert(userActivity)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+

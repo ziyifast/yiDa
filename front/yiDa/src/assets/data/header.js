@@ -1,9 +1,9 @@
 //用户下拉菜单
-const menuList = [
-    {name:'设置', path:'/setting'},
-    {name:'退出', path:0}
+const navMsg = [
+    {name:'首页', path:'/'},
+    {name:'个人中心', path:'myActivity'}
 ]
 
 export{
-    menuList
+    navMsg
 }

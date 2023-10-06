@@ -4,7 +4,8 @@
 > 系统：MacOS
 IDE：VSCode
 vue:2.9.6
-node:10.1.0
+npm:10.1.0
+node:20.7.0
 ```bash
 brew install npm
 npm install vue-cli -g
@@ -16,6 +17,9 @@ npm install axios
 # 安装vuex，用于保存用户数据到浏览器
 npm install vuex@^3.6.0
 npm install --save vuex-persistedstate@^2.0.0
+
+# # 安装sass-loader，用于加载scss文件
+# npm install stylus-loader css-loader style-loader --save-dev
 ```
 
 
@@ -65,7 +69,7 @@ create table activity_detail (
 
 -- 将表activity_detail 字段update_time 从date 修改成timestamp
 -- alter table activity_detail  alter column update_time  type timestamp using update_time::timestamp;
-
+-- insert into activity_detail(theme, owner, description, user_list, status, create_time, update_time) values ('唱歌le', 4,'','4', 1, '2023-10-06 19:11:05', '2023-10-06 19:11:05')
 
 -- 用户与活动关联表
 create table user_activity (

@@ -15,6 +15,7 @@ type ActivityDetailController struct {
 
 func (c *ActivityDetailController) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle(http.MethodGet, "/list", "GetAllActivityDetail")
+	b.Handle(http.MethodGet, "/list/{startPage:int}/{pageSize:int}", "GetActivityListByPage")
 	b.Handle(http.MethodPost, "/add", "AddActivityDetail")
 	b.Handle(http.MethodPost, "/update", "UpdateActivityDetail")
 	b.Handle(http.MethodGet, "/get/{uid:int64}", "GetUserActivitiesByUid")
@@ -43,6 +44,18 @@ func (c *ActivityDetailController) GetAllActivityDetail() mvc.Result {
 		return c.Failed(err.Error())
 	}
 	return c.Ok(list)
+}
+
+func (c *ActivityDetailController) GetActivityListByPage() mvc.Result {
+	// 获取分页参数
+	startPage, _ := c.ParamInt("startPage")
+	pageSize, _ := c.ParamInt("pageSize")
+	detailList, err := service.ActivityDetailService.GetActivityListByPage(startPage, pageSize)
+	if err != nil {
+		log.Errorf("%v", err)
+		c.Failed(err.Error())
+	}
+	return c.Ok(detailList)
 }
 
 func (c *ActivityDetailController) UpdateActivityDetail() mvc.Result {

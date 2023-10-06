@@ -6,7 +6,7 @@
 
 <script>
 export default {
-    name: 'register-logo',
+    name: 'egister-logor',
     data(){
         return {
             msg: 'Register logo part'

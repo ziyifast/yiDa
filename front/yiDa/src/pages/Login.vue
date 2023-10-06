@@ -85,7 +85,7 @@ export default {
                             //保存用户状态
                             this.$store.commit('setUsername', this.ruleForm.username)
                             this.$store.commit('setUserId', res.content.id)
-                            this.$router.push({ path: '/home' })
+                            this.$router.push({ path: '/' })
                         }
 
                     }).catch(err => {

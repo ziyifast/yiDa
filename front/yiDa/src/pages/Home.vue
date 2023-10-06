@@ -3,13 +3,17 @@
     <div align="right">
       <el-dropdown trigger="click" @command="handleCommand">
         <span>
-          当前登录用户：{{username}}
+          当前登录用户：{{ username }}
         </span>
-        <el-dropdown-menu slot="dropdown" >
+        <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="toMyActivity">个人中心</el-dropdown-item>
           <el-dropdown-item command="logout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      <br /><br /><br />
+      <el-row>
+        <el-button type="primary" @click="createActivity">发起活动</el-button>
+      </el-row>
     </div>
     <div>
       <h1>this is home page</h1>
@@ -37,24 +41,48 @@
         </el-table-column>
       </el-table>
     </div>
+    <div>
+      <el-pagination @current-change="handleCurrentChange" background layout="total,prev,pager,next"
+        :current-page="currentPage" :page-size="pageSize" :total="totalSize">
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
 import { updateActitityDetail } from '../api/index'
+import { delUserActivity } from '../api/index'
 import { getActivityList } from '../api/index'
+import { addUserActivity } from '../api/index'
+import { getActivityListByPage } from '../api/index'
+import TheHeader from '../components/TheHeader.vue'
 export default {
   name: 'home',
+  components: {
+    TheHeader
+  },
   data() {
     return {
       tableData: [],
+      totalSize: 0,
+      currentPage: 0,
+      pageSize: 2,
     }
   },
-  computed:{
-    username(){
+  computed: {
+    username() {
       return localStorage.getItem('username')
+    },
+    data() {
+      console.log("computed...");
+      return this.tableData.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
     }
   },
   mounted() {
+    let uid = localStorage.getItem('userId')
+    if (uid == null) {
+      this.$router.push('/login')
+      return
+    }
     this.getData()
   },
   methods: {
@@ -62,40 +90,31 @@ export default {
     getData() {
       // 调用接口
       getActivityList().then(res => {
-        this.handleActivityDetail(res.content)
+        this.totalSize = res.content.length
+        getActivityListByPage(this.currentPage, this.pageSize).then(res => {
+          this.tableData = res.content
+        })
+        // this.handleActivityDetail(res.content)
       })
     },
     addActivity(row) {
       //根据当前登录的用户信息获取用户id，然后将其与活动关联
       let uId = localStorage.getItem('userId');
-      row.update_time = ''
-      let activityDetail = row
-      activityDetail.user_list = activityDetail.user_list + ',' + uId
-      console.log("detail user_list=", activityDetail.user_list);
-      updateActitityDetail(activityDetail).then(res=>{
-        console.log("res=", res);
+      let aId = row.id
+
+      addUserActivity(uId, aId).then(res => {
+        console.log("add result=", res);
         if (res.code == '1') {
-          this.$notify({ type: 'success', message: '报名成功' })
+          this.$notify({ type: 'success', message: '加入活动成功' })
           this.getData()
         }
       })
     },
-    exitActivity(row){
+    exitActivity(row) {
       //根据当前登录的用户信息获取用户id，然后将其与活动解绑
-      let uId = localStorage.getItem('userId');
-      let activityDetail = row
-      let arr = activityDetail.user_list.split(",")
-      let newUserList=[]
-      for (let i = 0; i < arr.length; i++){
-        if (arr[i] != uId) {
-          newUserList.push(arr[i])
-        }
-      }
-      console.log("newUserList=", newUserList);
-      activityDetail.user_list = newUserList.join(",")
-      console.log("detail user_list=", activityDetail.user_list);
-      updateActitityDetail(activityDetail).then(res=>{
-        console.log("res=", res);
+      let uId = localStorage.getItem("userId")
+      let aId = row.id
+      delUserActivity(uId, aId).then(res => {
         if (res.code == '1') {
           this.$notify({ type: 'success', message: '退出活动成功' })
           this.getData()
@@ -106,14 +125,25 @@ export default {
       //TODO 将报名人员转换为username
       this.tableData = data
     },
-    handleCommand(command){
-      if (command == "toMyActivity"){
+    handleCommand(command) {
+      if (command == "toMyActivity") {
         this.$router.push({ path: '/myActivity' })
-      } else if (command == "logout"){
+      } else if (command == "logout") {
         //清空缓存，退出登录
         localStorage.removeItem('userId');
         this.$router.push({ path: '/' })
       }
+    },
+    createActivity() {
+      this.$router.push({ path: '/createActivity' })
+      console.log("创建活动...");
+    },
+    handleCurrentChange(val) {
+      //分页获取数据
+      getActivityListByPage(val, this.pageSize).then(res => {
+        this.tableData = res.content
+        console.log(res);
+      })
     }
   }
 }

@@ -11,7 +11,7 @@ type ActivityDetail struct {
 	Description string          `json:"description"`
 	UserList    string          `json:"user_list"`
 	Status      int             `json:"status"`
-	CreateTime  types.LocalTime `json:"create_time"`
+	CreateTime  types.LocalTime `json:"create_time" xorm:"created"`
 	UpdateTime  types.LocalTime `json:"update_time" xorm:"updated"`
 }
 

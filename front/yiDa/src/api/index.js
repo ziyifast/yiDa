@@ -17,10 +17,18 @@ export const getData = () => get('/data');
 //=======activity_detail相关========
 export const getActivityList = () => get('/activity_detail/list');
 
+export const getActivityListByPage = (startPage, pageSize) => get(`/activity_detail/list/${startPage}/${pageSize}`);
+
 export const updateActitityDetail = (params) => postJson(`/activity_detail/update`, params);
 
 export const getActivityListByUid = (uid) => get(`/activity_detail/get/${uid}`);
 
+export const addActivityDetail = (params) => post(`/activity_detail/add`, params);
+
 
 //=======user_activity相关========
 export const deleteUserActivityByUidAndAid = (uid, aid) => post(`/user_activity/delete/${uid}/${aid}`)
+
+export const delUserActivity = (uid, aid) => post(`/user_activity/delete/${uid}/${aid}`)
+
+export const addUserActivity = (uid, aid) => post(`/user_activity/add/${uid}/${aid}`);  

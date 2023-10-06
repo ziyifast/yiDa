@@ -28,6 +28,15 @@ func (s *activityDetailService) GetAll() ([]*model.ActivityDetail, error) {
 	return detailList, nil
 }
 
+func (s *activityDetailService) GetActivityListByPage(startPage, pageSize int) ([]*model.ActivityDetail, error) {
+	detailList, err := dao.ActivityDetailDao.GetActivityListByPage(pg.Engine, startPage, pageSize)
+	if err != nil {
+		log.Errorf("%v", err)
+		return nil, err
+	}
+	return detailList, nil
+}
+
 func (s *activityDetailService) UpdateActivityDetailById(detail *model.ActivityDetail) error {
 	// 更新活动详情表
 	_, err := dao.ActivityDetailDao.UpdateActivityDetailById(pg.Engine, detail)
@@ -37,8 +46,7 @@ func (s *activityDetailService) UpdateActivityDetailById(detail *model.ActivityD
 	return nil
 }
 
-
-func (s *activityDetailService) GetActivitiesByIds(ids []int64) (activities []*model.ActivityDetail, err error){
+func (s *activityDetailService) GetActivitiesByIds(ids []int64) (activities []*model.ActivityDetail, err error) {
 	activities, err = dao.ActivityDetailDao.GetActivitiesByIds(pg.Engine, ids)
 	if err != nil {
 		return nil, err

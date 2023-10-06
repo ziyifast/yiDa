@@ -5,7 +5,8 @@ import Login from '../pages/Login'
 import Register from '../pages/Register'
 import Home from '../pages/Home'
 import MyActivity from '../pages/MyActivity'
-import {Notification} from 'element-ui'
+import CreateActivity from '../pages/CreateActivity'
+import { Notification } from 'element-ui'
 Vue.prototype.$notify = Notification;
 
 Vue.use(Router)
@@ -14,9 +15,14 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'Home',
+      component: Home
+    },
+    {
+      path: '/login',
       name: 'Login',
       component: Login
-    }, 
+    },
     {
       path: '/index',
       name: 'Index',
@@ -28,14 +34,14 @@ export default new Router({
       component: Register
     },
     {
-      path: '/home',
-      name: 'Home',
-      component: Home
-    },
-    {
       path: '/myActivity',
       name: 'MyActivity',
       component: MyActivity
+    },
+    {
+      path: '/createActivity',
+      name: 'CreateActivity',
+      component: CreateActivity
     }
   ]
 })
