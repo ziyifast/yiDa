@@ -107,6 +107,18 @@ export default {
         if (res.code == '1') {
           this.$notify({ type: 'success', message: '加入活动成功' })
           this.getData()
+        } else {
+          console.log("res=", res)
+          var msg = res.msg
+          this.$notify({ type: 'error', message: msg })
+          return
+        }
+      }).
+      catch(err => {
+        var c = err.data.code
+        var msg = err.data.msg
+        if (c == "0") {
+          this.$notify({ type: 'error', message: msg })
         }
       })
     },

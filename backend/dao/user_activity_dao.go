@@ -17,6 +17,15 @@ func (d *userActivityDao) GetUserActivityByUidAndAid(engine xorm.Engine, uid, ai
 	return i, nil
 }
 
+func (d *userActivityDao) GetUserActivityDetailByUidAndAid(engine xorm.Engine, uid, aid int64) (bool, error) {
+	userActivity := new(model.UserActivity)
+	b, err := engine.Where("uid = ? and aid = ?", uid, aid).Get(userActivity)
+	if err != nil {
+		return false, err
+	}
+	return b, nil
+}
+
 func (d *userActivityDao) GetUserActivityByUid(engine xorm.Interface, uid int64) (userActivities []*model.UserActivity, err error) {
 	err = engine.Where("uid = ?", uid).Find(&userActivities)
 	return
@@ -37,4 +46,3 @@ func (d *userActivityDao) InsertUserActivity(engine xorm.Interface, userActivity
 	}
 	return nil
 }
-

@@ -45,6 +45,15 @@ func (c *UserActivityController) AddUserActivity() mvc.Result {
 	if err != nil {
 		return c.BadRequest()
 	}
+	//查询是否已经加入了该活动
+	flag, err2 := service.UserActivityService.GetUserActivityByUidAndAid(int64(uid), int64(aid))
+	if err2 != nil {
+		log.Errorf("%v", err2)
+		return c.Failed(err2.Error())
+	}
+	if flag {
+		return c.SystemInternalErrorWithMsg("你已经报名了该活动，不可重复报名")
+	}
 	err = service.UserActivityService.AddUserActivity(int64(uid), int64(aid))
 	if err != nil {
 		log.Errorf("%v", err)

@@ -24,7 +24,7 @@ func (d *activityDetailDao) Get(engine xorm.Interface) (detailList []*model.Acti
 }
 
 func (d *activityDetailDao) GetActivityListByPage(engine xorm.Interface, startPage, pageSize int) (detailList []*model.ActivityDetail, err error) {
-	err = engine.Limit(pageSize, (startPage-1)*pageSize).Find(&detailList)
+	err = engine.Limit(pageSize, (startPage-1)*pageSize).OrderBy("id").Find(&detailList)
 	return
 }
 

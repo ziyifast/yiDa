@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 
@@ -19,7 +20,13 @@ func (s *userActivityService) GetUserActivitiesByUid(uId int) (userActivity []*m
 	return
 }
 
-func (s *userActivityService) AddUserActivity(uid, aid int64) error {
+func (s *userActivityService) AddUserActivity(uid, aid int64) (err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			log.Errorf("%v", e)
+			err = errors.New("transaction err")
+		}
+	}()
 	session := pg.Engine.NewSession()
 	session.Begin()
 	defer session.Close()
@@ -27,7 +34,7 @@ func (s *userActivityService) AddUserActivity(uid, aid int64) error {
 		Uid: uid,
 		Aid: aid,
 	}
-	err := dao.UserActivityDao.InsertUserActivity(session, userActivity)
+	err = dao.UserActivityDao.InsertUserActivity(session, userActivity)
 	if err != nil {
 		log.Errorf("%v", err)
 		session.Rollback()
@@ -53,11 +60,17 @@ func (s *userActivityService) AddUserActivity(uid, aid int64) error {
 	return nil
 }
 
-func (s *userActivityService) DelUserActivity(uid, aid int64) error {
+func (s *userActivityService) DelUserActivity(uid, aid int64) (err error) {
+	defer func() {
+		if e := recover(); e != nil {
+			log.Errorf("%v", e)
+			err = errors.New("transaction err")
+		}
+	}()
 	session := pg.Engine.NewSession()
 	session.Begin()
 	defer session.Close()
-	err := dao.UserActivityDao.DeleteByUidAndAid(session, uid, aid)
+	err = dao.UserActivityDao.DeleteByUidAndAid(session, uid, aid)
 	if err != nil {
 		log.Errorf("%v", err)
 		session.Rollback()
@@ -86,4 +99,15 @@ func (s *userActivityService) DelUserActivity(uid, aid int64) error {
 	}
 	session.Commit()
 	return nil
+}
+
+func (s *userActivityService) GetUserActivityByUidAndAid(uid, aid int64) (bool, error) {
+	if uid < 0 || aid < 0 {
+		return false, errors.New("invalid param")
+	}
+	flag, err := dao.UserActivityDao.GetUserActivityDetailByUidAndAid(*pg.Engine, uid, aid)
+	if err != nil {
+		return false, err
+	}
+	return flag, nil
 }
