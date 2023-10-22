@@ -2,8 +2,6 @@ package service
 
 import (
 	"errors"
-	"strconv"
-	"strings"
 
 	"github.com/aobco/log"
 	"ziyi.com/yiDa/dao"
@@ -48,8 +46,6 @@ func (s *userActivityService) AddUserActivity(uid, aid int64) (err error) {
 		session.Rollback()
 		return err
 	}
-	uidStr := strconv.Itoa(int(uid))
-	activityDetail.UserList = activityDetail.UserList + "," + uidStr
 	_, err = dao.ActivityDetailDao.UpdateActivityDetailById(session, activityDetail)
 	if err != nil {
 		log.Errorf("%v", err)
@@ -82,15 +78,6 @@ func (s *userActivityService) DelUserActivity(uid, aid int64) (err error) {
 		log.Errorf("%v", err)
 		return err
 	}
-	arr := strings.Split(activityDetail.UserList, ",")
-	list := make([]string, 0)
-	for _, v := range arr {
-		if v != strconv.Itoa(int(uid)) {
-			list = append(list, v)
-		}
-	}
-	activityDetail.UserList = strings.Join(list, ",")
-	log.Infof("activityDetail:%v", activityDetail)
 	_, err = dao.ActivityDetailDao.UpdateActivityDetailById(session, activityDetail)
 	if err != nil {
 		log.Errorf("%v", err)
@@ -110,4 +97,27 @@ func (s *userActivityService) GetUserActivityByUidAndAid(uid, aid int64) (bool, 
 		return false, err
 	}
 	return flag, nil
+}
+
+func (s *userActivityService) GetUserListByAid(detailList []*model.ActivityDetail) (map[int64]string, error) {
+	res := make(map[int64]string)
+	//获取活动列表与参与人员的关联关系
+	for _, v := range detailList {
+		ids, err := dao.UserActivityDao.GetUidsByAid(pg.Engine, int64(v.Id))
+		if err != nil {
+			log.Errorf("根据活动id获取报名人员列表失败%v", err)
+			return nil, err
+		}
+		var userListStr string
+		for _, uid := range ids {
+			user, err := dao.UserDao.GetUserById(pg.Engine, uid)
+			if err != nil {
+				log.Errorf("根据uid获取用户信息失败%v", err)
+				return nil, err
+			}
+			userListStr += user.Username + ","
+		}
+		res[int64(v.Id)] = userListStr
+	}
+	return res, nil
 }

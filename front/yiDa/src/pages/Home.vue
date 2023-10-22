@@ -92,6 +92,7 @@ export default {
       getActivityList().then(res => {
         this.totalSize = res.content.length
         getActivityListByPage(this.currentPage, this.pageSize).then(res => {
+          console.log(res.content[0]);
           this.tableData = res.content
         })
         // this.handleActivityDetail(res.content)

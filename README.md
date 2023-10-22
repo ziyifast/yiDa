@@ -110,3 +110,10 @@ create table user_activity (
 
 V2版本：
 > 用户之间的聊天， 智能推荐
+
+
+# update
+> 删除activity_detail字段，改为每次查询user_activity来拼接
+```sql
+alter table activity_detail drop column user_list;
+```
