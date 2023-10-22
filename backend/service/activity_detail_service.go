@@ -53,3 +53,8 @@ func (s *activityDetailService) GetActivitiesByIds(ids []int64) (activities []*m
 	}
 	return activities, nil
 }
+
+func (s *activityDetailService) GetActivityDetailById(id int64) (detail *model.ActivityDetail, err error) {
+	detail, err = dao.ActivityDetailDao.GetActivityDetailById(pg.Engine, id)
+	return
+}

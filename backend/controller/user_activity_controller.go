@@ -45,6 +45,15 @@ func (c *UserActivityController) AddUserActivity() mvc.Result {
 	if err != nil {
 		return c.BadRequest()
 	}
+	//查询活动状态是否已经暂停或关闭（status是否为0）
+	ad, err2 := service.ActivityDetailService.GetActivityDetailById(int64(aid))
+	if err2 != nil {
+		log.Errorf("%v", err2)
+		return c.SystemInternalErrorWithMsg(err2.Error())
+	}
+	if ad.Status == 0 {
+		return c.SystemInternalErrorWithMsg("活动已暂停或已关闭")
+	}
 	//查询是否已经加入了该活动
 	flag, err2 := service.UserActivityService.GetUserActivityByUidAndAid(int64(uid), int64(aid))
 	if err2 != nil {
